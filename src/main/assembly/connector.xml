@@ -34,22 +34,16 @@
             <directory>target/classes</directory>
             <outputDirectory></outputDirectory>
         </fileSet>
-
-        <fileSet>
-            <directory>${basedir}/../../legal</directory>
-            <includes>
-                <include>license.txt</include>
-            </includes>
-            <outputDirectory></outputDirectory>
-        </fileSet>
     </fileSets>
 
     <dependencySets>
         <dependencySet>
-            <includes>
-                <include>org.vngx:vngx-jsch</include>
-            </includes>
             <outputDirectory>lib</outputDirectory>
+            <useProjectArtifact>false</useProjectArtifact>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>net.tirasa.connid:connector-framework</exclude>
+            </excludes>
         </dependencySet>
     </dependencySets>
     

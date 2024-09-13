@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.connid.bundles.unix.realenvironment;
+package org.connid.bundles.unix;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.connid.bundles.unix.UnixConnector;
-import org.connid.bundles.unix.search.Operand;
-import org.connid.bundles.unix.search.Operator;
 import org.connid.bundles.unix.utilities.AttributesTestValue;
 import org.connid.bundles.unix.utilities.SharedTestMethods;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class UnixAuthenticateTest extends SharedTestMethods {
 
@@ -45,7 +37,7 @@ public class UnixAuthenticateTest extends SharedTestMethods {
 
     private AttributesTestValue attrs = null;
 
-    @Before
+    @BeforeTest
     public final void initTest() {
         attrs = new AttributesTestValue();
         connector = new UnixConnector();
@@ -73,49 +65,49 @@ public class UnixAuthenticateTest extends SharedTestMethods {
 //        connector.delete(ObjectClass.ACCOUNT, newAccount, null);
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public final void authFailedTest() {
         connector.authenticate(ObjectClass.ACCOUNT,
                 attrs.getWrongUsername(),
                 attrs.getWrongGuardedPassword(), null);
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions= ConnectorException.class)
     public final void authTestWithWrongPassword() {
         connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
                 attrs.getWrongGuardedPassword(), null);
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public final void authTestWithWrongUsername() {
         connector.authenticate(ObjectClass.ACCOUNT,
                 attrs.getWrongUsername(), attrs.getGuardedPassword(), null);
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public void authTestWithWrongObjectClass() {
         connector.authenticate(attrs.getWrongObjectClass(),
                 attrs.getUsername(), attrs.getGuardedPassword(), null);
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public final void authTestWithNullPassword() {
         connector.authenticate(ObjectClass.ACCOUNT, name.getNameValue(),
                 null, null);
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public final void authTestWithNullUsername() {
         connector.authenticate(ObjectClass.ACCOUNT, null,
                 attrs.getWrongGuardedPassword(), null);
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public final void authTestWithAllNull() {
         connector.authenticate(null, null, null, null);
     }
 
-    @After
+    @AfterTest
     public final void close() {
         connector.dispose();
     }

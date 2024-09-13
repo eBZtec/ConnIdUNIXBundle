@@ -17,8 +17,8 @@ package org.connid.bundles.unix;
 
 import org.connid.bundles.unix.utilities.SharedTestMethods;
 import org.connid.bundles.unix.utilities.UnixProperties;
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class UnixConfigurationTests extends SharedTestMethods {
 

@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.connid.bundles.unix.realenvironment;
-
-import static org.junit.Assert.assertEquals;
+package org.connid.bundles.unix;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.connid.bundles.unix.UnixConnector;
-import org.connid.bundles.unix.schema.SchemaAccountAttribute;
 import org.connid.bundles.unix.schema.SchemaGroupAttribute;
 import org.connid.bundles.unix.search.Operand;
 import org.connid.bundles.unix.search.Operator;
@@ -34,10 +30,10 @@ import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class UnixCreateGroupTest extends SharedTestMethods {
 
@@ -46,7 +42,7 @@ public class UnixCreateGroupTest extends SharedTestMethods {
     private Uid newAccount = null;
     private AttributesTestValue attrs = null;
 
-    @Before
+    @BeforeTest
     public final void initTest() {
         attrs = new AttributesTestValue();
         connector = new UnixConnector();
@@ -91,13 +87,13 @@ public class UnixCreateGroupTest extends SharedTestMethods {
 					}
 				}, null);
 		for (ConnectorObject connObj : actual) {
-			assertEquals(name.getNameValue(), connObj.getName().getNameValue());
+			Assert.assertEquals(name.getNameValue(), connObj.getName().getNameValue());
 		}
         
         connector.delete(ObjectClass.GROUP, newAccount, null);
     }
 
-    @After
+    @AfterTest
     public final void close() {
         connector.dispose();
     }

@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.connid.bundles.unix.realenvironment;
+package org.connid.bundles.unix;
 
-import org.connid.bundles.unix.UnixConnector;
 import org.connid.bundles.unix.utilities.AttributesTestValue;
 import org.connid.bundles.unix.utilities.SharedTestMethods;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class UnixDeleteGroupTest extends SharedTestMethods {
 
@@ -33,7 +32,7 @@ public class UnixDeleteGroupTest extends SharedTestMethods {
     private Uid newAccount = null;
     private AttributesTestValue attrs = null;
 
-    @Before
+    @BeforeTest
     public final void initTest() {
         attrs = new AttributesTestValue();
         connector = new UnixConnector();
@@ -41,18 +40,18 @@ public class UnixDeleteGroupTest extends SharedTestMethods {
         name = new Name(attrs.getUsername());
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public final void deleteNotExistsUser() {
         connector.delete(ObjectClass.GROUP,
                 new Uid(attrs.getWrongGroupName()), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public final void deleteNullUser() {
         connector.delete(ObjectClass.GROUP, null, null);
     }
 
-    @After
+    @AfterTest
     public final void close() {
         connector.dispose();
     }

@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.connid.bundles.unix.realenvironment;
+package org.connid.bundles.unix;
 
-import org.connid.bundles.unix.UnixConnector;
 import org.connid.bundles.unix.utilities.AttributesTestValue;
 import org.connid.bundles.unix.utilities.SharedTestMethods;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class UnixDeleteUserTest extends SharedTestMethods {
 
@@ -33,7 +32,7 @@ public class UnixDeleteUserTest extends SharedTestMethods {
     private Uid newAccount = null;
     private AttributesTestValue attrs = null;
 
-    @Before
+    @BeforeTest
     public final void initTest() {
         attrs = new AttributesTestValue();
         connector = new UnixConnector();
@@ -41,29 +40,29 @@ public class UnixDeleteUserTest extends SharedTestMethods {
         name = new Name(attrs.getUsername());
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public final void deleteNotExistsUser() {
         connector.delete(ObjectClass.ACCOUNT,
                 new Uid(attrs.getWrongUsername()), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public final void deleteNullUser() {
         connector.delete(ObjectClass.ACCOUNT, null, null);
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public final void deleteNull() {
         connector.delete(null, null, null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public final void deleteWithWrongObjectClass() {
         connector.delete(attrs.getWrongObjectClass(),
                 newAccount, null);
     }
 
-    @After
+    @AfterTest
     public final void close() {
         connector.dispose();
     }

@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.connid.bundles.unix.realenvironment;
+package org.connid.bundles.unix;
 
-import org.connid.bundles.unix.UnixConnector;
 import org.connid.bundles.unix.utilities.AttributesTestValue;
 import org.connid.bundles.unix.utilities.SharedTestMethods;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class UnixUpdateUserTest extends SharedTestMethods {
 
@@ -41,7 +40,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
 
     private final static boolean INACTIVE_USER = false;
 
-    @Before
+    @BeforeTest
     public final void initTest() {
         attrs = new AttributesTestValue();
         connector = new UnixConnector();
@@ -124,7 +123,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
                 attrs.getGuardedPassword(), null);
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public final void updateAndAuthenticateWithOldPassword() {
     	printTestTitle("updateAndAuthenticateWithOldPassword");
         newAccount = connector.create(ObjectClass.ACCOUNT,
@@ -138,7 +137,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
                 attrs.getGuardedPassword(), null);
     }
 
-    @Test(expected = ConnectorException.class)
+    @Test(expectedExceptions = ConnectorException.class)
     public final void updateNotExistsUser() {
     	printTestTitle("updateNotExistsUser");
         connector.update(ObjectClass.ACCOUNT, new Uid(attrs.getWrongUsername()),
@@ -146,7 +145,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
                 ACTIVE_USER), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void updateWithWrongObjectClass() {
     	printTestTitle("updateWithWrongObjectClass");
     	newAccount = connector.create(ObjectClass.ACCOUNT,
@@ -157,7 +156,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
                 ACTIVE_USER), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void updateWithNullObjectClass() {
     	printTestTitle("updateWithNullObjectClass");
         connector.update(null, newAccount,
@@ -165,7 +164,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
                 ACTIVE_USER), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void updateWithNullUid() {
     	printTestTitle("updateWithNullUid");
         connector.update(ObjectClass.ACCOUNT, null,
@@ -173,7 +172,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
                 ACTIVE_USER), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void updateWithNullSet() {
     	printTestTitle("updateWithNullSet");
         newAccount = connector.create(ObjectClass.ACCOUNT,
@@ -182,7 +181,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
         connector.update(ObjectClass.ACCOUNT, newAccount, null, null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void updateWithNullPwd() {
     	printTestTitle("updateWithNullPwd");
         newAccount = connector.create(ObjectClass.ACCOUNT,
@@ -192,7 +191,7 @@ public class UnixUpdateUserTest extends SharedTestMethods {
                 createSetOfAttributes(name, null, true), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void updateWithNullUsername() {
     	printTestTitle("updateWithNullUsername");
         newAccount = connector.create(ObjectClass.ACCOUNT,
@@ -203,13 +202,13 @@ public class UnixUpdateUserTest extends SharedTestMethods {
                 ACTIVE_USER), null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void updateWithAllNull() {
     	printTestTitle("updateWithAllNull");
         connector.update(null, null, null, null);
     }
 
-    @After
+    @AfterTest
     public final void close() {
         if (newAccount != null) {
             connector.delete(ObjectClass.ACCOUNT, newAccount, null);
