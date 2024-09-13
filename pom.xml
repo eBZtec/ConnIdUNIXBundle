@@ -14,18 +14,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.tirasa.connid</groupId>
-        <artifactId>connid</artifactId>
-        <version>1.4.2.0</version>
+        <artifactId>connector-parent</artifactId>
+        <groupId>com.evolveum.polygon</groupId>
+        <version>1.5.1.3</version>
     </parent>
 
     <groupId>org.connid.bundles</groupId>
     <artifactId>org.connid.bundles.unix</artifactId>
-    <version>1.2-SNAPSHOT</version>
-
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ConnId Bundles: UNIX</name>
+    <name>connector-unix</name>
 
     <url>http://connid.tirasa.net/</url>
     <inceptionYear>2011</inceptionYear>
@@ -69,322 +68,59 @@
 
     <properties>
         <base.version>1.4.0.0</base.version>
-        <jsch.version>0.1.53</jsch.version>
+        <jsch.version>0.2.19</jsch.version>
+
+        <connectorPackage>org.connid.bundles.unix</connectorPackage>
+        <connectorClass>UnixConnector</connectorClass>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.tirasa.connid</groupId>
-            <artifactId>connector-framework</artifactId>
-            <version>${base.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.tirasa.connid</groupId>
-            <artifactId>connector-framework-internal</artifactId>
-            <version>${base.version}</version>
-        </dependency>
-        <!-- SSH -->
-        <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>${jsch.version}</version>
-        </dependency>
-        <!-- SSH -->
-        <dependency>
-            <groupId>com.github.cverges.expect4j</groupId>
-            <artifactId>expect4j</artifactId>
-            <version>1.6</version>
-        </dependency>
-
-        <!-- TEST -->
-        <dependency>
-            <groupId>net.tirasa.connid</groupId>
-            <artifactId>connector-test-common</artifactId>
-            <version>1.4.2.0</version>  <!-- ${base.version} -->
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- TEST -->
-    </dependencies>
-
-    <profiles>
-        <profile>
-            <id>it</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>2.6</version>
-                        <executions>
-                            <execution>
-                                <id>copy-dependencies</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>com.jcraft</groupId>
-                                            <artifactId>jsch</artifactId>
-                                            <version>${jsch.version}</version>
-                                            <type>jar</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
-                                    <overWriteReleases>false</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                    <overWriteIfNewer>true</overWriteIfNewer>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <includes>
-                                <include>**/*Test.java</include>
-                            </includes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-
-                <defaultGoal>clean verify</defaultGoal>
-                <testResources>
-                    <testResource>
-                        <directory>src/test/resources</directory>
-                        <filtering>true</filtering>
-                        <includes>
-                            <include>unix.properties</include>
-                        </includes>
-                    </testResource>
-                </testResources>
-            </build>
-        </profile>
-    </profiles>
+    <repositories>
+        <repository>
+            <id>evolveum-nexus-releases</id>
+            <name>Internal Releases</name>
+            <url>https://nexus.evolveum.com/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>evolveum-nexus-snapshots</id>
+            <name>Internal Releases</name>
+            <url>https://nexus.evolveum.com/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
 
     <build>
-
         <plugins>
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.10.b1</version>
-                <inherited>false</inherited>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-javadoc-legal-files</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/apidocs/META-INF</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>.</directory>
-                                    <includes>
-                                        <include>LICENSE</include>
-                                        <include>NOTICE</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-messages</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                    <includes>
-                                        <include>**/**</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
-
             <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>2.8</version>
-                <inherited>false</inherited>
-                <configuration>
-                    <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-                    <properties>
-                        <owner>ConnId</owner>
-                        <email>connid-dev@googlegroups.com</email>
-                    </properties>
-                    <excludes>
-                        <exclude>**/LICENSE*</exclude>
-                        <exclude>**/NOTICE*</exclude>
-                        <exclude>**/*.pfx</exclude>
-                        <exclude>**/*.dll</exclude>
-                        <exclude>**/*.so</exclude>
-                        <exclude>**/*.jnilib</exclude>
-                        <exclude>nbactions.xml</exclude>
-                        <exclude>nb-configuration.xml</exclude>
-                        <exclude>**/META-INF/services/**</exclude>
-                        <exclude>**/*.css</exclude>
-                        <exclude>**/*.js</exclude>
-                        <exclude>**/*.csv</exclude>
-                        <exclude>**/maven-eclipse.xml</exclude>
-                        <exclude>**/*.iml</exclude>
-                        <exclude>**/*.log</exclude>
-                        <exclude>.externalToolBuilders/**</exclude>
-                        <exclude>.git/**</exclude>
-                        <exclude>.idea/**</exclude>
-                        <exclude>**/.*</exclude>
-                        <exclude>**/pom.xml</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <includes>
-                        <include>**/*Tests.java</include>
-                    </includes>
-                </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-
-                    <appendAssemblyId>false</appendAssemblyId>
-
-                    <descriptors>
-                        <descriptor>src/assemble/connector.xml</descriptor>
-                    </descriptors>
-
-                    <archive>
-                        <index>true</index>
-                        <manifestEntries>
-
-                            <ConnectorBundle-FrameworkVersion>
-                                ${base.version}
-                            </ConnectorBundle-FrameworkVersion>
-
-                            <ConnectorBundle-Name>
-                                ${project.artifactId}
-                            </ConnectorBundle-Name>
-
-                            <ConnectorBundle-Version>
-                                ${project.version}
-                            </ConnectorBundle-Version>
-
-<!--                            <Class-Path>-->
-<!--                                lib/jsch-0.1.53.jar-->
-<!--                            </Class-Path>-->
-
-                        </manifestEntries>
-                    </archive>
-
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-            <!-- Workaround because of missing lib/ in jar bundle-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.8</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeArtifactIds>connector-test-common,connector-framework-internal,connector-framework</excludeArtifactIds>
-                            <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
-
-
-        <resources>
-            <resource>
-                <directory>.</directory>
-                <targetPath>META-INF</targetPath>
-                <includes>
-                    <include>LICENSE</include>
-                    <include>NOTICE</include>
-                    <include>/src/main/resources</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
 
-    <repositories>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-    </repositories>
+    <dependencies>
+        <!-- SSH -->
+        <dependency>
+            <groupId>com.github.mwiede</groupId>
+            <artifactId>jsch</artifactId>
+            <version>${jsch.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
