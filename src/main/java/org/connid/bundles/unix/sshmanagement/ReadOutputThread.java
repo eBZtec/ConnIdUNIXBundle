@@ -46,34 +46,36 @@ public class ReadOutputThread implements Callable<UnixResult> {
     public UnixResult call() throws Exception {
 
         String line;
-        LOG.ok("Channel for {1} closed: {0}", new Object[]{execChannel.isClosed(), execChannel.getSession().getHost()});
-
-        while (!execChannel.isClosed()) {
-            Thread.sleep(10);
-        }
-
-        LOG.ok("Channel for {1} closed: {0}", new Object[]{execChannel.isClosed(), execChannel.getSession().getHost()});
-
         BufferedReader br = new BufferedReader(new InputStreamReader(fromServer));
         StringBuilder buffer = new StringBuilder();
         LOG.ok("Input stream, available {0}", fromServer.available());
-        if (fromServer.available() > 0) {
-            while ((line = br.readLine()) != null) {
-                if (isRead) {
-                    if (line.contains("Could not chdir to home directory")) {
-                        continue;
-                    }
-                }
-                if (line.contains(PASSWD_PROMPT)) {
-                    line = trimLine(line);
 
+        while (true) {
+            while (fromServer.available() > 0) {
+                while ((line = br.readLine()) != null) {
+                    if (isRead) {
+                        if (line.contains("Could not chdir to home directory")) {
+                            continue;
+                        }
+                    }
+                    if (line.contains(PASSWD_PROMPT)) {
+                        line = trimLine(line);
+
+                    }
+                    LOG.ok("Reading line: {0}", line);
+                    buffer.append(line).append("\n");
                 }
-                LOG.ok("Reading line: {0}", line);
-                buffer.append(line).append("\n");
             }
-        }
-        if (execChannel.isClosed()) {
-            LOG.ok("exit-status: {0}", execChannel.getExitStatus());
+            if (execChannel.isClosed()) {
+                if(fromServer.available() > 0) continue;
+                LOG.ok("Channel for {1} closed: {0}", new Object[]{execChannel.isClosed(), execChannel.getSession().getHost()});
+                LOG.ok("exit-status: {0}", execChannel.getExitStatus());
+                break;
+            }
+
+            try{
+                Thread.sleep(1000);
+            }catch(Exception ee){}
         }
 
         LOG.ok("buffer {0}", buffer.toString());
