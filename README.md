@@ -1,28 +1,45 @@
-ConnIdUNIXBundle
+Connector Unix
 ==============
 
-The UNIX bundle is part of the [ConnId](http://connid.tirasa.net) project.
+This UNIX Connector is a fork of the [ConnId](https://github.com/Evolveum/ConnIdUNIXBundle) project.
 
-## How to get it
+## Dependencies
+
+[![GitHub release](https://img.shields.io/github/v/tag/mwiede/jsch.svg)](https://github.com/mwiede/jsch/tree/jsch-0.2.19)
+
+## How to build
 
 ### Maven
 
-```XML
-<dependency>
-  <groupId>org.connid.bundles</groupId>
-  <artifactId>org.connid.bundles.unix</artifactId>
-  <version>${connid.unix.version}</version>
-</dependency>
+* download UNIX connector source code from Github
+* build connector with maven:
+```
+mvn clean install -DskipTests=true
+```
+* find org.connid.bundles.unix-{version}.jar in ```/target``` folder
+
+## Installation
+
+* put org.connid.bundles.unix-{version}.jar to ```{midPoint_home}/icf-connectors/``` or ```{midPoint_home}/connid-connectors/``` directory
+
+### Run tests
+
+Fillout the properties file ```src/test/resoruces/unix.properties``` with your unix configuration:
+
+```
+unix.admin=
+unix.password=
+unix.hostname=
+unix.port=22
+unix.base.home.directory=/home
+unix.user.shell=/bin/bash
+unix.user.root=true
+unix.pty=true
+unix.ptytype=
 ```
 
-where `connid.unix.version` is one of [available](http://repo1.maven.org/maven2/org/connid/bundles/org.connid.bundles.unix/).
+and then run:
 
-### Downloads
-
-Available from [releases](https://github.com/Tirasa/ConnIdUNIXBundle/releases).
-
-## Project information
-
- * [wiki](https://connid.atlassian.net/wiki/display/BASE/UNIX)
- * [issues](https://connid.atlassian.net/browse/UNIX)
- * <a href="https://travis-ci.org/Tirasa/ConnIdUNIXBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdUNIXBundle.png"/></a>
+```bash
+mvn clean install
+```
